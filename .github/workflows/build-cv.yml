@@ -4,12 +4,15 @@ on:
   push:
     branches: [main]
     paths: ["cv.tex"]
+  workflow_dispatch:
 
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Set up Git repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -23,10 +26,34 @@ jobs:
       - name: Rename PDF to desired filename
         run: mv cv.pdf abhishekprasad.pdf
 
-      - name: Commit and push updated PDF
+      - name: Check if PDF was created
+        run: |
+          if [ -f "abhishekprasad.pdf" ]; then
+            echo "PDF created successfully"
+            ls -la abhishekprasad.pdf
+          else
+            echo "PDF not found"
+            exit 1
+          fi
+
+      - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+
+      - name: Commit and push updated PDF
+        run: |
           git add abhishekprasad.pdf
-          git diff --staged --quiet || git commit -m "Update resume PDF [skip ci]"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            echo "Committing updated PDF"
+            git commit -m "Update resume PDF [skip ci]"
+            git push origin main
+          fi
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Resume-PDF
+          path: abhishekprasad.pdf
