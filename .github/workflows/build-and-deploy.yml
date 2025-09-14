@@ -20,8 +20,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      run_id: ${{ github.run_id }}
 
     steps:
       - name: Checkout repository
@@ -50,7 +48,8 @@ jobs:
           fi
 
           # Copy PDF to a web-friendly name
-          cp build/cv.pdf build/index.pdf
+          cp build/cv.pdf build/abhishekprasad.pdf
+
       - name: Create HTML index page
         run: |
           cat > build/index.html << EOF
@@ -102,17 +101,18 @@ jobs:
                       <p>Your browser doesn't support PDF viewing. <a href="abhishekprasad.pdf">Download the PDF</a> instead.</p>
                   </iframe>
               </div>
-              <p><small>Last updated: $(date)</small></p>
+              <p><small>Last updated: \$(date)</small></p>
           </body>
           </html>
           EOF
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: github-pages-${{ github.run_number }}
           path: build/
-          retention-days: 1
 
   deploy:
     environment:
@@ -121,20 +121,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: github-pages-${{ needs.build.outputs.run_id }}
-          path: build
-      
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: 'build/.'
-          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
