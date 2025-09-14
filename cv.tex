@@ -1,0 +1,181 @@
+% article class because we want to fully customize the page and not use a cv template
+\documentclass[a4paper,12pt]{article}
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES
+%----------------------------------------------------------------------------------------
+\usepackage{url}
+\usepackage{parskip} 	
+
+%other packages for formatting
+\RequirePackage{color}
+\RequirePackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[scale=0.9]{geometry}
+
+%tabularx environment
+\usepackage{tabularx}
+\usepackage{enumitem} %for lists within experience section
+
+% centered version of 'X' col. type
+\newcolumntype{C}{>{\centering\arraybackslash}X} 
+
+%to prevent spillover of tabular into next pages
+\usepackage{supertabular}
+\usepackage{tabularx}
+\newlength{\fullcollw}
+\setlength{\fullcollw}{0.47\textwidth}
+
+%custom \section
+\usepackage{titlesec}				
+\usepackage{multicol}
+\usepackage{multirow}
+
+%CV Sections inspired by: 
+\titleformat{\section}{\Large\scshape\raggedright}{}{0em}{}[\titlerule]
+\titlespacing{\section}{0pt}{9pt}{9pt}
+
+%for publications
+\usepackage[style=authoryear,sorting=ynt, maxbibnames=2]{biblatex}
+
+%Setup hyperref package, and colours for links
+\usepackage[unicode, draft=false]{hyperref}
+\definecolor{linkcolour}{rgb}{0,0.2,0.6}
+\hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
+\addbibresource{citations.bib}
+\setlength\bibitemsep{1em}
+
+%for social icons
+\usepackage{fontawesome5}
+
+\newenvironment{jobshort}[2]
+  {%
+    % Line 1: Job Position (left) and Period (right)
+    \noindent\textbf{#1} \hfill #2 \par
+    % \vspace{1pt} % A small vertical space before the list
+    % Start a compact itemize list for the work experience
+    \begin{itemize}[nosep, leftmargin=1.5em, itemsep=2pt, label=$\bullet$]
+  }
+  {%
+    % End the list
+    \end{itemize}
+  }
+
+\newenvironment{joblong}[2]
+    {
+    \begin{tabularx}{\linewidth}{@{}l X r@{}}
+    \textbf{#1} & \hfill &  #2 \\[1pt]
+    \end{tabularx}
+    \begin{itemize}[nosep, after=\strut, leftmargin=1em, itemsep=3pt, label=--]
+    }
+    {
+    \end{itemize}
+    }
+    
+% project environment
+\newenvironment{project}[2]
+  {
+    % Line 1: Project Title (left) and Tech Stack (right)
+    \noindent\textbf{#1} \hfill \textit{#2}\\[2pt] % Use \\ instead of \par
+  }
+  {
+    % \vspace{\topsep} % Adds a tiny, consistent space after the project
+  }
+
+%----------------------------------------------------------------------------------------
+%	BEGIN DOCUMENT
+%----------------------------------------------------------------------------------------
+\begin{document}
+
+% non-numbered pages
+\pagestyle{empty} 
+
+%----------------------------------------------------------------------------------------
+%	TITLE
+%----------------------------------------------------------------------------------------
+
+\begin{tabularx}{\linewidth}{@{} C @{}}
+\Huge{Abhishek Prasad} \\[7.5pt]
+\href{https://github.com/abhishek622}{\raisebox{-0.05\height}\faGithub\ abhishek622} \ $|$ \ 
+\href{https://linkedin.com/in/abhishekprasad00}{\raisebox{-0.05\height}\faLinkedin\ abhishekprasad00} \ $|$ \ 
+\href{mailto:application.aprasad@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ application.aprasad@gmail.com} \ $|$ \ 
+\href{https://portfolio.abhishekprasad0602.workers.dev}{\raisebox{-0.05\height}\faGlobe\ portfolio} \\
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+% SUMMARY PARAGRAPH
+%----------------------------------------------------------------------------------------
+
+Backend Developer with experience building and shipping production-grade features in a global SaaS environment. Adept at taking full ownership of projects, delivering with discipline, and solving impactful problems to drive business growth.
+
+%----------------------------------------------------------------------------------------
+% EXPERIENCE SECTIONS
+%----------------------------------------------------------------------------------------
+
+%Experience
+\section{Work Experience}
+
+\begin{jobshort}
+ {Backend Developer - Ringover}                        % job_position
+  {June 2023 -- Present}                    % period
+   \item Collaborated with cross-functional teams to develop key features and resolve issues in services built within a distributed monolith using \textbf{node.js}, ensuring high performance, scalability, and reliability for over 10k+ active users.
+\item Owned end-to-end integration of 4 enterprise CRMs (Sellsy, Odoo, Dynamics 365, Vincere) — expanding Cadence’s ecosystem by \textbf{40\%} with two-way sync, real-time logs, and socket-based bulk imports.
+\item Independently developed a rate-limited public API to enable client-side automation, featuring asynchronous bulk lead importing (1,000+ per request) and management of over 100 lead tasks.
+\end{jobshort}
+
+\begin{jobshort}
+  {Backend Developer Intern - Ringover}               % job_position
+  {July 2022 -- May 2023}                  % period
+  % {Ringover}                               % company_name
+  % {Remote}                                 % location
+   \item Developed global settings with user-defined timezones, using RabbitMQ and cron-based scheduler to ensure client outreach occurred at optimal local times — maximizing sales opportunities.
+    \item Built the "Cadence Support Tool" using node.js and TiDB(Open-source, distributed SQL database) to give the support team secure data access, slashing routine ticket volume and accelerating issue resolution.
+\end{jobshort}
+
+\begin{jobshort}
+  {Project Intern - HighRadius}                        % job_position
+  {Jan 2022 -- Apr 2022}                  % period
+  % {HighRadius}                            % company_name
+  % {Remote}                                % location
+   \item Developed AI-powered fintech B2B cloud application — cash flow forecasting engine with Flask ML + Java backend achieving 89\% accuracy.
+\item Designed efficient invoice search system with MySQL optimizations and React UI — with average load time of 0.3s for 50K+ records.
+\end{jobshort}
+  
+%----------------------------------------------------------------------------------------
+% PROJECTS
+%----------------------------------------------------------------------------------------
+\section{Projects}
+
+\begin{project}
+    {\href{https://github.com/abhishek622/gomind}{Gomind - AI-Powered Go CLI Task Manager \raisebox{-0.05\height}\faGithub}}
+    {Go, Awan LLM, MongoDB}
+    Built a CLI tool that takes input in natural language and uses AI to auto-generate detailed tasks with MongoDB persistence. Designed for developers to keep quick notes through intelligent task management.
+\end{project}
+
+\begin{project}
+    {\href{https://github.com/abhishek622/movieapp}{MovieApp - Microservices Architecture \raisebox{-0.05\height}\faGithub}}
+    {Go, MySQL, Docker, gRPC}
+    Movie platform backend built with observability, scalability, and resilience in mind. Features comprehensive monitoring with Prometheus/Grafana, service discovery, caching with Redis, and distributed tracing for performance and reliability.
+\end{project}
+
+%----------------------------------------------------------------------------------------
+%	EDUCATION
+%----------------------------------------------------------------------------------------
+\section{Education}
+\begin{tabularx}{\linewidth}{@{}l X r@{}}
+\textbf{Institute of Technical Education and Research} && Bhubaneswar, India  \\
+B.Tech in Computer Science and Engineering - CGPA: 8.66/10.0 && June 2019 -- May 2023
+\end{tabularx}
+
+%----------------------------------------------------------------------------------------
+%	SKILLS
+%----------------------------------------------------------------------------------------
+\section{Technical Skills}
+\begin{tabularx}{\linewidth}{@{}l X@{}}
+Languages: & Javascript, Go, Python, SQL \\
+Tools and Frameworks: & Node.js, Gin, Git, Docker, GCP, Bitbucket, GenAI, VS Code \\
+% Databases &  MySQL, PostgreSQL, MongoDB, Redis \\
+% Infrastructure & Docker, Kubernetes, Redis, RabbitMQ, Prometheus \\
+\end{tabularx}
+
+\end{document}

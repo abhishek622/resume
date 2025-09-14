@@ -1,0 +1,143 @@
+name: Build LaTeX CV and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up TeX Live
+        uses: tecosaur/setup-texlive@v1
+        with:
+          package_scheme: full
+          packages: >
+            latexmk
+            xetex
+            fontspec
+            geometry
+            hyperref
+            xcolor
+            enumitem
+            titlesec
+            parskip
+            microtype
+            babel
+            babel-english
+
+      - name: Compile LaTeX document
+        run: |
+          # Create output directory
+          mkdir -p build
+
+          # Compile the CV
+          if ! latexmk -pdf -output-directory=build -interaction=nonstopmode cv.tex; then
+            echo "Compilation failed, showing log..."
+            cat build/*.log
+            exit 1
+          fi
+
+          # Rename and copy the PDF
+          cp build/cv.pdf build/abhishekprasad.pdf
+          # Create a copy with web-friendly name
+          cp build/abhishekprasad.pdf build/index.pdf
+
+          # Create a simple HTML index page
+          cat > build/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>My CV</title>
+              <style>
+                  body {
+                      font-family: Arial, sans-serif;
+                      max-width: 800px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      text-align: center;
+                  }
+                  .cv-container {
+                      border: 1px solid #ddd;
+                      border-radius: 8px;
+                      padding: 20px;
+                      margin: 20px auto;
+                      max-width: 90%;
+                  }
+                  .download-btn {
+                      display: inline-block;
+                      background-color: #007bff;
+                      color: white;
+                      padding: 12px 24px;
+                      text-decoration: none;
+                      border-radius: 5px;
+                      margin: 20px 10px;
+                      font-weight: bold;
+                      transition: background-color 0.3s;
+                  }
+                  .download-btn:hover {
+                      background-color: #0056b3;
+                      text-decoration: none;
+                  }
+                  iframe {
+                      width: 100%;
+                      height: 1000px;
+                      border: 1px solid #ddd;
+                      border-radius: 5px;
+                      margin: 20px 0;
+                  }
+                  .container {
+                      margin: 40px auto;
+                      max-width: 800px;
+                  }
+                  h1 {
+                      color: #2c3e50;
+                      margin-bottom: 30px;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <h1>My Curriculum Vitae</h1>
+                  <div class="cv-container">
+                      <p>Below is an embedded version of my CV. You can also download it using the button below.</p>
+                      <a href="abhishekprasad.pdf" class="download-btn" download>Download CV as PDF</a>
+                      <iframe src="abhishekprasad.pdf" title="My CV"></iframe>
+                  </div>
+              </div>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./build
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
