@@ -17,6 +17,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Remove existing PDF
+        run: |
+          if [ -f "abhishekprasad.pdf" ]; then
+            git rm abhishekprasad.pdf
+            echo "Removed existing abhishekprasad.pdf"
+          else
+            echo "No existing abhishekprasad.pdf to remove"
+          fi
+
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
