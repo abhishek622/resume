@@ -1,11 +1,12 @@
+# .github/workflows/build-and-deploy.yml
 name: Build LaTeX CV and Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main] # Change to 'master' if that's your default branch
   pull_request:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering
 
 permissions:
   contents: read
@@ -19,47 +20,38 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up TeX Live
-        uses: tecosaur/setup-texlive@v1
-        with:
-          package_scheme: full
-          packages: >
-            latexmk
-            xetex
-            fontspec
-            geometry
-            hyperref
-            xcolor
-            enumitem
-            titlesec
-            parskip
-            microtype
-            babel
-            babel-english
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra latexmk
 
       - name: Compile LaTeX document
         run: |
           # Create output directory
           mkdir -p build
 
-          # Compile the CV
-          if ! latexmk -pdf -output-directory=build -interaction=nonstopmode cv.tex; then
-            echo "Compilation failed, showing log..."
-            cat build/*.log
+          # Compile the CV (try multiple engines in case one fails)
+          if latexmk -pdf -output-directory=build cv.tex; then
+            echo "Successfully compiled with pdflatex"
+          elif latexmk -xelatex -output-directory=build cv.tex; then
+            echo "Successfully compiled with xelatex"
+          elif pdflatex -output-directory=build cv.tex; then
+            echo "Successfully compiled with pdflatex (direct)"
+          else
+            echo "Compilation failed"
             exit 1
           fi
 
-          # Rename and copy the PDF
-          cp build/cv.pdf build/abhishekprasad.pdf
-          # Create a copy with web-friendly name
-          cp build/abhishekprasad.pdf build/index.pdf
-
-          # Create a simple HTML index page
-          cat > build/index.html << 'EOF'
+          # Copy PDF to a web-friendly name
+          cp build/cv.pdf build/index.pdf
+      - name: Create HTML index page
+        run: |
+          cat > build/index.html << EOF
           <!DOCTYPE html>
           <html lang="en">
           <head>
@@ -78,66 +70,49 @@ jobs:
                       border: 1px solid #ddd;
                       border-radius: 8px;
                       padding: 20px;
-                      margin: 20px auto;
-                      max-width: 90%;
+                      margin: 20px 0;
                   }
                   .download-btn {
                       display: inline-block;
                       background-color: #007bff;
                       color: white;
-                      padding: 12px 24px;
+                      padding: 10px 20px;
                       text-decoration: none;
                       border-radius: 5px;
-                      margin: 20px 10px;
-                      font-weight: bold;
-                      transition: background-color 0.3s;
+                      margin: 10px;
                   }
                   .download-btn:hover {
                       background-color: #0056b3;
-                      text-decoration: none;
                   }
                   iframe {
                       width: 100%;
-                      height: 1000px;
-                      border: 1px solid #ddd;
-                      border-radius: 5px;
-                      margin: 20px 0;
-                  }
-                  .container {
-                      margin: 40px auto;
-                      max-width: 800px;
-                  }
-                  h1 {
-                      color: #2c3e50;
-                      margin-bottom: 30px;
+                      height: 800px;
+                      border: none;
                   }
               </style>
           </head>
           <body>
-              <div class="container">
-                  <h1>My Curriculum Vitae</h1>
-                  <div class="cv-container">
-                      <p>Below is an embedded version of my CV. You can also download it using the button below.</p>
-                      <a href="abhishekprasad.pdf" class="download-btn" download>Download CV as PDF</a>
-                      <iframe src="abhishekprasad.pdf" title="My CV"></iframe>
-                  </div>
+              <h1>My Curriculum Vitae</h1>
+              <div class="cv-container">
+                  <a href="abhishekprasad.pdf" class="download-btn" download>Download PDF</a>
+                  <a href="abhishekprasad.pdf" class="download-btn" target="_blank">Open in New Tab</a>
+                  <iframe src="abhishekprasad.pdf" type="application/pdf">
+                      <p>Your browser doesn't support PDF viewing. <a href="abhishekprasad.pdf">Download the PDF</a> instead.</p>
+                  </iframe>
               </div>
+              <p><small>Last updated: $(date)</small></p>
           </body>
           </html>
           EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./build
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
