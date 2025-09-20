@@ -93,7 +93,6 @@ jobs:
               </style>
           </head>
           <body>
-              <h1>My Curriculum Vitae</h1>
               <div class="cv-container">
                   <a href="abhishekprasad.pdf" class="download-btn" download>Download PDF</a>
                   <a href="abhishekprasad.pdf" class="download-btn" target="_blank">Open in New Tab</a>
@@ -101,7 +100,6 @@ jobs:
                       <p>Your browser doesn't support PDF viewing. <a href="abhishekprasad.pdf">Download the PDF</a> instead.</p>
                   </iframe>
               </div>
-              <p><small>Last updated: \$(date)</small></p>
           </body>
           </html>
           EOF
