@@ -1,9 +1,8 @@
-% article class because we want to fully customize the page and not use a cv template
 \documentclass[a4paper,12pt]{article}
 
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 %	PACKAGES
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 \usepackage{url}
 \usepackage{parskip} 	
 
@@ -11,7 +10,8 @@
 \RequirePackage{color}
 \RequirePackage{graphicx}
 \usepackage[usenames,dvipsnames]{xcolor}
-\usepackage[scale=0.9]{geometry}
+% \usepackage[margin=0.5in]{geometry}
+\usepackage[scale=0.91]{geometry}
 
 %tabularx environment
 \usepackage{tabularx}
@@ -22,7 +22,7 @@
 
 %to prevent spillover of tabular into next pages
 \usepackage{supertabular}
-\usepackage{tabularx}
+
 \newlength{\fullcollw}
 \setlength{\fullcollw}{0.47\textwidth}
 
@@ -33,44 +33,26 @@
 
 %CV Sections inspired by: 
 \titleformat{\section}{\Large\scshape\raggedright}{}{0em}{}[\titlerule]
-\titlespacing{\section}{0pt}{9pt}{9pt}
-
-%for publications
-\usepackage[style=authoryear,sorting=ynt, maxbibnames=2]{biblatex}
+\titlespacing{\section}{0pt}{3pt}{6pt}
 
 %Setup hyperref package, and colours for links
 \usepackage[unicode, draft=false]{hyperref}
 \definecolor{linkcolour}{rgb}{0,0.2,0.6}
 \hypersetup{colorlinks,breaklinks,urlcolor=linkcolour,linkcolor=linkcolour}
-\addbibresource{citations.bib}
-\setlength\bibitemsep{1em}
 
 %for social icons
 \usepackage{fontawesome5}
 
-\newenvironment{jobshort}[2]
-  {%
-    % Line 1: Job Position (left) and Period (right)
-    \noindent\textbf{#1} \hfill #2 \par
-    % \vspace{1pt} % A small vertical space before the list
-    % Start a compact itemize list for the work experience
-    \begin{itemize}[nosep, leftmargin=1.5em, itemsep=2pt, label=$\bullet$]
-  }
-  {%
-    % End the list
+% Experience environment
+\newenvironment{experience}[4]
+{%
+    \noindent\textbf{#1} \hfill \textbf{#2} \\
+    \textit{#3} \hfill \textit{#4} 
+    \begin{itemize}[nosep, leftmargin=1.2em, itemsep=1pt, label=$\bullet$]
+}
+{%
     \end{itemize}
-  }
-
-\newenvironment{joblong}[2]
-    {
-    \begin{tabularx}{\linewidth}{@{}l X r@{}}
-    \textbf{#1} & \hfill &  #2 \\[1pt]
-    \end{tabularx}
-    \begin{itemize}[nosep, after=\strut, leftmargin=1em, itemsep=3pt, label=--]
-    }
-    {
-    \end{itemize}
-    }
+}
     
 % project environment
 \newenvironment{project}[2]
@@ -78,104 +60,96 @@
     % Line 1: Project Title (left) and Tech Stack (right)
     \noindent\textbf{#1} \hfill \textit{#2}\\[2pt] % Use \\ instead of \par
   }
-  {
-    % \vspace{\topsep} % Adds a tiny, consistent space after the project
-  }
+  {}
 
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 %	BEGIN DOCUMENT
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 \begin{document}
 
 % non-numbered pages
 \pagestyle{empty} 
 
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 %	TITLE
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+\begin{center}
+{\Huge{Abhishek Prasad}} \\[4pt]
+\href{mailto:application.aprasad@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ application.aprasad@gmail.com} \ $|$ \
+\href{https://linkedin.com/in/abhishekprasad00}{\raisebox{-0.05\height}\faLinkedin\ abhishekprasad00} \ $|$ \
+\href{https://github.com/abhishek622}{\raisebox{-0.05\height}\faGithub\ abhishek622} \ $|$ \
+\href{https://portfolio.abhishekprasad0602.workers.dev}{\raisebox{-0.05\height}\faGlobe\ portfolio}
+\end{center}
 
-\begin{tabularx}{\linewidth}{@{} C @{}}
-\Huge{Abhishek Prasad} \\[7.5pt]
-\href{https://github.com/abhishek622}{\raisebox{-0.05\height}\faGithub\ abhishek622} \ $|$ \ 
-\href{https://linkedin.com/in/abhishekprasad00}{\raisebox{-0.05\height}\faLinkedin\ abhishekprasad00} \ $|$ \ 
-\href{mailto:application.aprasad@gmail.com}{\raisebox{-0.05\height}\faEnvelope\ application.aprasad@gmail.com} \ $|$ \ 
-\href{https://portfolio.abhishekprasad0602.workers.dev}{\raisebox{-0.05\height}\faGlobe\ portfolio} \\
-\end{tabularx}
-
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 % SUMMARY PARAGRAPH
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 
-Backend Developer with experience building and shipping production-grade features in a global SaaS environment. Adept at taking full ownership of projects, delivering with discipline, and solving impactful problems to drive business growth.
+Backend Developer with experience in building scalable SaaS platforms, CRM integrations, and AI-driven prospect insights. Skilled in designing reliable systems, optimizing performance, and collaborating with teams to deliver features that enhance user experience, expand adoption, and support business growth.
 
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
+%	SKILLS
+%--------------------------------------------------------------------------
+\section{Technical Skills}
+\textbf{Programming:} JavaScript, Go, Python, SQL \\
+\textbf{Frameworks \& Databases:} Node.js, React.js, Gin, PostgreSQL, MySQL, MongoDB, Redis, TiDB \\
+\textbf{Tools \& Infrastructure:} Git, Bitbucket, Docker, GCP, gRPC, Socket.io, RabbitMQ, Prometheus
+% Infrastructure & Docker, Kubernetes, Redis, RabbitMQ, Prometheus \\
+
+
+%--------------------------------------------------------------------------
 % EXPERIENCE SECTIONS
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 
 %Experience
 \section{Work Experience}
 
-\begin{jobshort}
- {Backend Developer - Ringover}                        % job_position
+\begin{experience}
+ {Backend Developer}                        % job_position
   {June 2023 -- Present}                    % period
-   \item Collaborated with cross-functional teams to develop key features and resolve issues in services built within a distributed monolith using \textbf{node.js}, ensuring high performance, scalability, and reliability for over 10k+ active users.
-\item Owned end-to-end integration of 4 enterprise CRMs (Sellsy, Odoo, Dynamics 365, Vincere) — expanding Cadence’s ecosystem by \textbf{40\%} with two-way sync, real-time logs, and socket-based bulk imports.
-\item Independently developed a rate-limited public API to enable client-side automation, featuring asynchronous bulk lead importing (1,000+ per request) and management of over 100 lead tasks.
-\end{jobshort}
+  {Ringover}                               % company_name
+  {Remote}                                 % location
+    \item Managed 10+ CRM integrations such as Salesforce, Pipedrive, and Odoo, with bidirectional sync, real-time logging and socket based imports (2K+ records/request), expanding platform adoption.
+    \item Engineered rate-limited public API that allows client automation with asynchronous bulk lead processing (1,000+ records/request), reduces manual data entry by 85\%.  
+    \item Optimized distributed monolith performance using Node.js and Redis caching, maintaining 99.9\% uptime for 10K+ active users while reducing API response times by 45\%.
+    \item Collaborated cross-functionally with product and front-end teams to deliver 12+ high-impact features, directly contributing to 25\% increase in user engagement metrics.
+\end{experience}
 
-\begin{jobshort}
-  {Backend Developer Intern - Ringover}               % job_position
+\begin{experience}
+  {Backend Developer Intern}               % job_position
   {July 2022 -- May 2023}                  % period
-  % {Ringover}                               % company_name
-  % {Remote}                                 % location
-   \item Developed global settings with user-defined timezones, using RabbitMQ and cron-based scheduler to ensure client outreach occurred at optimal local times — maximizing sales opportunities.
-    \item Built the "Cadence Support Tool" using node.js and TiDB(Open-source, distributed SQL database) to give the support team secure data access, slashing routine ticket volume and accelerating issue resolution.
-\end{jobshort}
+  {Ringover}                               % company_name
+  {Remote}                                 % location
+   \item Developed global timezone management system using RabbitMQ message queues and cron schedulers, optimizing client outreach timing and increasing conversion rates by 30\%.
+    \item Developed internal Cadence Support Tool (Node.js + TiDB) to empower support teams with secure, self-serve data access, reducing routine ticket resolution time by 60\%. 
+    % \item Implemented automated monitoring and alerting systems, decreasing system downtime incidents by 50\% and improving overall platform reliability
+\end{experience}
 
-\begin{jobshort}
-  {Project Intern - HighRadius}                        % job_position
+\begin{experience}
+  {Project Intern}                        % job_position
   {Jan 2022 -- Apr 2022}                  % period
-  % {HighRadius}                            % company_name
-  % {Remote}                                % location
-   \item Developed AI-powered fintech B2B cloud application — cash flow forecasting engine with Flask ML + Java backend achieving 89\% accuracy.
-\item Designed efficient invoice search system with MySQL optimizations and React UI — with average load time of 0.3s for 50K+ records.
-\end{jobshort}
+  {HighRadius}                            % company_name
+  {Remote}                                % location
+    \item Built and deployed an AI-enabled fintech B2B application as part of HighRadius’ selective Highway to HighRadius program, simulating real-world enterprise development.
+    \item Developed an ML powered cash flow forecasting engine (89\% accuracy) and engineered high-performance invoice search system achieving 0.3s response time for 20K+ records using MySQL indexing, caching optimizations with Flask, Java, and React, enabling clients to optimize working capital.
+\end{experience}
   
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 % PROJECTS
-%----------------------------------------------------------------------------------------
-\section{Projects}
-
-\begin{project}
-    {\href{https://github.com/abhishek622/gomind}{Gomind - AI-Powered Go CLI Task Manager \raisebox{-0.05\height}\faGithub}}
-    {Go, Awan LLM, MongoDB}
-    Built a CLI tool that takes input in natural language and uses AI to auto-generate detailed tasks with MongoDB persistence. Designed for developers to keep quick notes through intelligent task management.
-\end{project}
-
+%--------------------------------------------------------------------------
+\section{Project}
 \begin{project}
     {\href{https://github.com/abhishek622/movieapp}{MovieApp - Microservices Architecture \raisebox{-0.05\height}\faGithub}}
     {Go, MySQL, Docker, gRPC}
-    Movie platform backend built with observability, scalability, and resilience in mind. Features comprehensive monitoring with Prometheus/Grafana, service discovery, caching with Redis, and distributed tracing for performance and reliability.
+    Built a Go microservices movie backend to explore scalability patterns, featuring gRPC for inter-service communication and Redis for caching. The entire system was containerized with Docker and instrumented with Prometheus and distributed tracing to ensure high availability in a cloud-native environment.
 \end{project}
 
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 %	EDUCATION
-%----------------------------------------------------------------------------------------
+%--------------------------------------------------------------------------
 \section{Education}
-\begin{tabularx}{\linewidth}{@{}l X r@{}}
-\textbf{Institute of Technical Education and Research} && Bhubaneswar, India  \\
-B.Tech in Computer Science and Engineering - CGPA: 8.66/10.0 && June 2019 -- May 2023
-\end{tabularx}
-
-%----------------------------------------------------------------------------------------
-%	SKILLS
-%----------------------------------------------------------------------------------------
-\section{Technical Skills}
-\begin{tabularx}{\linewidth}{@{}l X@{}}
-Languages: & Javascript, Go, Python, SQL \\
-Tools and Frameworks: & Node.js, Gin, Git, Docker, GCP, Bitbucket, GenAI, VS Code \\
-% Databases &  MySQL, PostgreSQL, MongoDB, Redis \\
-% Infrastructure & Docker, Kubernetes, Redis, RabbitMQ, Prometheus \\
-\end{tabularx}
+\textbf{Bachelor of Technology, Computer Science \& Engineering} \hfill \textbf{June 2019 -- May 2023} \\
+Institute of Technical Education and Research, Bhubaneswar \hfill \textbf{CGPA: 8.66/10.0} \\
+\textbf{Publication:} \href{https://ieeexplore.ieee.org/abstract/document/11063984}{\textit{Secure Ambulance Access using Physical Unclonable Functions (PUFs)}} - \\Co-authored research on a PUF based authentication scheme for secure ambulance access, enhancing patient safety and data security through unique hardware signatures and cryptographic verification.
 
 \end{document}
